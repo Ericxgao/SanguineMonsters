@@ -247,19 +247,19 @@ struct SuperSwitch18 : SanguineModule {
 		setUnselectedOutputs();
 
 		if (bIsLightsTurn) {
-			int currentLight
-				for (int step = 0; step < superSwitches::kMaxSteps; ++step) {
-					currentLight = LIGHT_STEP_1 + step * 2;
-					if (step < stepCount) {
-						lights[currentLight].setBrightness((step != selectedOut) *
-							kSanguineButtonLightValue);
-						lights[currentLight + 1].setBrightness((step == selectedOut) *
-							kSanguineButtonLightValue);
-					} else {
-						lights[currentLight].setBrightness(0.f);
-						lights[currentLight + 1].setBrightness(0.f);
-					}
+			int currentLight;
+			for (int step = 0; step < superSwitches::kMaxSteps; ++step) {
+				currentLight = LIGHT_STEP_1 + step * 2;
+				if (step < stepCount) {
+					lights[currentLight].setBrightness((step != selectedOut) *
+						kSanguineButtonLightValue);
+					lights[currentLight + 1].setBrightness((step == selectedOut) *
+						kSanguineButtonLightValue);
+				} else {
+					lights[currentLight].setBrightness(0.f);
+					lights[currentLight + 1].setBrightness(0.f);
 				}
+			}
 
 			lights[LIGHT_RESET_TO_FIRST_STEP].setBrightness(
 				params[PARAM_RESET_TO_FIRST_STEP].getValue() * kSanguineButtonLightValue);

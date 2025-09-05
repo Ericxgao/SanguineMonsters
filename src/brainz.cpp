@@ -7,6 +7,7 @@
 #include "sanguinejson.hpp"
 
 #include "brainz.hpp"
+#include <chrono>
 
 struct Brainz : SanguineModule {
 	enum ParamIds {

@@ -5,7 +5,6 @@
 // Modified GIST from https://gist.github.com/unohee/d4f32b3222b42de84a5f
 
 #include <algorithm>
-#include <iostream>
 #include <vector>
 #include <cmath>
 

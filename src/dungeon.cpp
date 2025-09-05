@@ -75,7 +75,14 @@ struct Dungeon : SanguineModule {
 
 	dsp::ClockDivider clockDivider;
 
-	sanguineRandom::SanguineRandomNormal rngNormal;
+	float randomNormal() {
+		float u1 = rack::random::get<float>();
+		float u2 = rack::random::get<float>();
+		if (u1 <= 0.f) u1 = 1e-7f;
+		float r = std::sqrt(-2.f * std::log(u1));
+		float theta = 2.f * M_PI * u2;
+		return r * std::sin(theta);
+	}
 
 	Dungeon() {
 		config(PARAMS_COUNT, INPUTS_COUNT, OUTPUTS_COUNT, LIGHTS_COUNT);
@@ -99,7 +106,7 @@ struct Dungeon : SanguineModule {
 		configOutput(OUTPUT_NOISE, "Noise");
 		configOutput(OUTPUT_VOLTAGE, "Voltage");
 
-		rngNormal.init(std::round(system::getUnixTime()));
+		/* RNG init not required for rack::random */
 
 		clockDivider.division = kClockDividerFrequency;
 	}
@@ -109,7 +116,7 @@ struct Dungeon : SanguineModule {
 		bool bGateButton = params[PARAM_TRIGGER].getValue() > 0.f;
 
 		if (bOutNoiseConnected) {
-			whiteNoise = 2.f * rngNormal.normal();
+			whiteNoise = 2.f * randomNormal();
 			outputs[OUTPUT_NOISE].setVoltage(whiteNoise);
 		}
 
@@ -263,7 +270,7 @@ struct Dungeon : SanguineModule {
 			inVoltage = inputs[INPUT_VOLTAGE].getVoltage();
 		} else {
 			if (!bOutNoiseConnected) {
-				whiteNoise = 2.f * rngNormal.normal();
+				whiteNoise = 2.f * randomNormal();
 			}
 			inVoltage = whiteNoise;
 		}
