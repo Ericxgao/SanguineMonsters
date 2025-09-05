@@ -6,7 +6,7 @@
 #include "sanguinehelpers.hpp"
 #include "sanguinejson.hpp"
 
-#include <iomanip>
+#include <cstdio>
 
 #include "raiju.hpp"
 
@@ -106,15 +106,18 @@ struct Raiju : SanguineModule {
 
 				// Get channel voltages and update strings for displays
 				voltages[voltage] = params[PARAM_VOLTAGE + voltage].getValue();
-				std::stringstream stringStream;
-				stringStream << std::fixed << std::setprecision(3) << std::setfill('0') << std::setw(6) << voltages[voltage];
+				char buf[16];
+				std::snprintf(buf, sizeof(buf), "%6.3f", voltages[voltage]);
+				// Ensure format for negative values matches previous behavior
 				if (voltages[voltage] < 0 && voltages[voltage] > -10) {
-					std::string tmpStr = stringStream.str();
-					tmpStr.replace(0, 1, "0");
-					tmpStr.insert(0, "-");
-					strVoltages[voltage] = tmpStr;
-				} else
-					strVoltages[voltage] = stringStream.str();
+					// Replace leading space with '-' then zero-pad
+					// buf looks like " -0.123"; convert to "-0.123"
+					if (buf[0] == ' ') {
+						// shift minus in
+						buf[0] = '-';
+					}
+				}
+				strVoltages[voltage] = std::string(buf);
 
 				if (outputsConnected[voltage]) {
 					float_4 outputVoltages = voltages[voltage];
